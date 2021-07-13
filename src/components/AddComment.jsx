@@ -2,7 +2,7 @@ import { Button, Form } from 'react-bootstrap';
 import { useState } from "react";
 import { useEffect } from 'react';
 
-const AddComment = (props) => {
+const AddComment = ({asin}) => {
 
     const [comment, setComment] = useState({
         comment: '',
@@ -19,11 +19,14 @@ const AddComment = (props) => {
     } */
 
     useEffect(() => {       
-            setComment({
-                ...comment,
-                elementId: props.asin
-            })        
-    }, [])
+            setComment(c => ({
+                ...c,
+                elementId: asin
+            })
+                
+                
+            )        
+    }, [asin])
 
     const sendComment = async (e) => {
         e.preventDefault()
@@ -40,6 +43,11 @@ const AddComment = (props) => {
             if (response.ok) {
                 // the comment has been sent succesfully!!
                 alert('Comment was sent!')
+                setComment({
+                    comment: '',
+                    rate: 1,
+                    elementId: null
+                })
             } else {
                 console.log('error')
                 alert('something went wrong')
@@ -70,10 +78,10 @@ const AddComment = (props) => {
                         <Form.Label>Rating</Form.Label>
                         <Form.Control as="select" value={comment.rate}
                             onChange={e => setComment({
-                                comment: {
+                                
                                     ...comment,
                                     rate: e.target.value
-                                }
+                                
                             })}>
                             <option>1</option>
                             <option>2</option>
@@ -87,8 +95,7 @@ const AddComment = (props) => {
                     </Button>
                 </Form>
             </div>
-        )
-    
+        )    
 }
 
 export default AddComment

@@ -4,7 +4,7 @@ import Loading from './Loading'
 import Error from './Error'
 import { useState, useEffect } from "react";
 
-const CommentArea = (props) => {
+const CommentArea = ({asin}) => {
 
     const [comments, setComments] = useState([])
     const [isLoading, setIsLoading] = useState(false)
@@ -23,7 +23,7 @@ const CommentArea = (props) => {
            
             const fetchComments = async () => {
             try {
-                let response = await fetch('https://striveschool-api.herokuapp.com/api/comments/' + this.props.asin, {
+                let response = await fetch('https://striveschool-api.herokuapp.com/api/comments/' + asin, {
                     headers: {
                         Authorization:
                         "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MGRjNmMwMGIzNTgxNzAwMTVjMjI3NDkiLCJpYXQiOjE2MjUwNTgzMDQsImV4cCI6MTYyNjI2NzkwNH0.Ibc--VACzfbnbVnmlo0H7tPvvmxWZW_tKIx3RWPsOSE",
@@ -48,15 +48,15 @@ const CommentArea = (props) => {
             }
             fetchComments();
         
-    }, [] )
+    }, [asin] )
 
    
         return (
             <div>
-                {setIsLoading(true) && <Loading />}
-                {setIsError(true) && <Error />}
-                <AddComment asin={props.asin} />
-                <CommentList commentsToShow={setComments(comments)} />
+                {isLoading && <Loading />}
+                {isError && <Error />}
+                <AddComment asin={asin} />
+                <CommentList commentsToShow={comments} />
             </div>
         )
     
