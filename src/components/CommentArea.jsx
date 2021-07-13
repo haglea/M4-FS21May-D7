@@ -1,22 +1,27 @@
-import { Component } from 'react'
 import CommentList from './CommentList'
 import AddComment from './AddComment'
 import Loading from './Loading'
 import Error from './Error'
+import { useState, useEffect } from "react";
 
-class CommentArea extends Component {
+const CommentArea = (props) => {
 
-    state = {
+    const [comments, setComments] = useState([])
+    const [isLoading, setIsLoading] = useState(false)
+    const [isError, setIsError] = useState(false)
+
+
+   /*  state = {
         comments: [], // comments will go here
         isLoading: false,
         isError: false
-    }
+    } */
 
-    componentDidUpdate = async (prevProps) => {
-        if (prevProps.asin !== this.props.asin) {
-            this.setState({
-                isLoading: true
-            })
+    useEffect(() => {        
+          
+            setIsLoading(true)
+           
+            const fetchComments = async () => {
             try {
                 let response = await fetch('https://striveschool-api.herokuapp.com/api/comments/' + this.props.asin, {
                     headers: {
@@ -27,28 +32,34 @@ class CommentArea extends Component {
                 console.log(response)
                 if (response.ok) {
                     let comments = await response.json()
-                    this.setState({ comments: comments, isLoading: false, isError: false })
+                    setComments(comments)
+                    setIsLoading(false)
+                    setIsError(false)
                 } else {
                     console.log('error')
-                    this.setState({ isLoading: false, isError: true })
+                    setIsLoading(false)
+                    setIsError(true)
                 }
             } catch (error) {
                 console.log(error)
-                this.setState({ isLoading: false, isError: true })
+                setIsLoading(false)
+                setIsError(true)
             }
-        }
-    }
+            }
+            fetchComments();
+        
+    }, [] )
 
-    render() {
+   
         return (
             <div>
-                {this.state.isLoading && <Loading />}
-                {this.state.isError && <Error />}
-                <AddComment asin={this.props.asin} />
-                <CommentList commentsToShow={this.state.comments} />
+                {setIsLoading(true) && <Loading />}
+                {setIsError(true) && <Error />}
+                <AddComment asin={props.asin} />
+                <CommentList commentsToShow={setComments(comments)} />
             </div>
         )
-    }
+    
 }
 
 export default CommentArea
